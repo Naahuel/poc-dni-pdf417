@@ -1,0 +1,11 @@
+// This is a simple SASS module
+p {
+  color: #080080
+}
+
+.background{
+  width: 400px;
+  height: 400px;
+  display: inline-block;
+  background-image: url(../images/background.png);
+}
