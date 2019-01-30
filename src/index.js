@@ -104,12 +104,25 @@ const parseResult = _text => {
   }
 }
 
+const getDefaultVideoDevice = devices => {
+  const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  if( devices.length === 1 ) {
+    return devices[0];
+  }
+
+  if( iOS ) {
+    return devices[1];
+  } else {
+    return devices[0]
+  }
+}
+
 const startWebcam = () => { 
   //----------------------------------------------------------------------
   //  Here we list all media devices, in order to choose between
   //  the front and the back camera.
-  //      videoDevices[0] : Front Camera
-  //      videoDevices[1] : Back Camera
+  //      videoDevices[0] : Front Camera android / back camera ios
+  //      videoDevices[1] : Back Camera android / front camera ios
   //----------------------------------------------------------------------
   navigator.mediaDevices.enumerateDevices()
   .then(devices => {
@@ -122,7 +135,8 @@ const startWebcam = () => {
       }
     });
 
-    let _videoDevice = videoDevices[1] ? videoDevices[1] : videoDevices[0];
+    let _videoDevice = getDefaultVideoDevice(videoDevices);
+
     let constraints =  {
       width: { min: 320, ideal: 640, max: 1024 },
       height: { min: 240, ideal: 480, max: 768 },
