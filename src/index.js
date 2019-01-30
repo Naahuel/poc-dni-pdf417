@@ -10,7 +10,7 @@ navigator.getUserMedia  = navigator.getUserMedia ||
 
 // Variables
 let _canvasWidth = 0, _canvasHeight = 0;
-let skipFrame = 25;
+let skipFrame = 45;
 let loopFrame;
 let source, binarizer, bitmap, result;
 let ultimoDni = '';
