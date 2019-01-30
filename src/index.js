@@ -55,19 +55,19 @@ const parseResult = _text => {
   console.log(data);
   if( data.length == 8 ||  data.length == 9 ) {
     // Formato nuevo
-    apellido = data[1]
-    nombre   = data[2]
-    sexo     = data[3]
-    dni      = data[4]
-    fechaNac = data[6]
+    apellido = data[1].trim()
+    nombre   = data[2].trim()
+    sexo     = data[3].trim()
+    dni      = data[4].trim()
+    fechaNac = data[6].trim()
 
   } else if (data.length == 15) {
     // Formato anterior
-    apellido = data[4]
-    nombre   = data[5]
-    sexo     = data[8]
-    dni      = data[1]
-    fechaNac = data[7]
+    apellido = data[4].trim()
+    nombre   = data[5].trim()
+    sexo     = data[8].trim()
+    dni      = data[1].trim()
+    fechaNac = data[7].trim()
   } else {
     // Formato NO identificado
     return;
@@ -77,6 +77,7 @@ const parseResult = _text => {
     // El DNI escaneado es igual al último
     return;
   }
+  ultimoDni = dni;
 
   if( validarFecha(fechaNac) &&
       validarNumero(dni) && 
@@ -91,6 +92,15 @@ const parseResult = _text => {
     result = result.replace('%fechaNac%', fechaNac);
 
     resultP.innerHTML = result;
+    resultP.classList.add('success');
+    setTimeout(_ => {
+      resultP.classList.remove("success");
+    }, 1000);
+  } else {
+    resultP.classList.add('error');
+    setTimeout(_ => {
+      resultP.classList.remove("error");
+    }, 1000);
   }
 }
 
