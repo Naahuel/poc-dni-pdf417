@@ -1,5 +1,6 @@
 {
   "name": "dni-argentino-scan",
+  "version": 1,
   "alias": "dni-argentino-scan.now.sh",
   "type": "npm"
 }
