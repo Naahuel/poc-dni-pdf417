@@ -105,15 +105,16 @@ const parseResult = _text => {
 }
 
 const getDefaultVideoDevice = devices => {
+  console.log(devices)
   const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-  if( devices.length === 1 ) {
+  if( devices.length === 1 || !devices[1]) {
     return devices[0];
   }
 
   if( iOS ) {
     return devices[0];
   } else {
-    return devices[1]
+    return devices[1];
   }
 }
 
