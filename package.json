@@ -1,10 +1,11 @@
 {
-  "name": "webpack-boilerplate",
+  "name": "dni-argentino-scan",
   "version": "0.0.1",
-  "description": "Webpack Boilerplate",
+  "description": "DNI PDF417",
   "main": "webpack.common.js",
   "scripts": {
-    "start": "webpack-dev-server --open --config webpack.dev.js",
+    "start": "serve -s dist/",
+    "dev": "webpack-dev-server --open --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js"
   },
   "author": "Nahuel José",
