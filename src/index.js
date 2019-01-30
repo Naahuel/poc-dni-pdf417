@@ -111,9 +111,9 @@ const getDefaultVideoDevice = devices => {
   }
 
   if( iOS ) {
-    return devices[1];
+    return devices[0];
   } else {
-    return devices[0]
+    return devices[1]
   }
 }
 
