@@ -10,6 +10,7 @@ navigator.getUserMedia  = navigator.getUserMedia ||
 
 // Variables
 let _canvasWidth = 0, _canvasHeight = 0;
+let skipFrame = 25;
 let source, binarizer, bitmap, result;
 
 // Crear canvas para el video
@@ -20,53 +21,48 @@ const canvas = document.createElement('canvas'),
 let resultP = document.createElement('p');
 document.body.appendChild(resultP)
 
-// Agregar canvas al body
-document.body.appendChild(canvas);
-
 // Crear elemento video e imagen
 const video = document.createElement('video');
       video.setAttribute('autoplay',true);
+      document.body.appendChild(video);
 const image = document.createElement('img')
 
 const startWebcam = () => { 
-    //----------------------------------------------------------------------
-    //  Here we list all media devices, in order to choose between
-    //  the front and the back camera.
-    //      videoDevices[0] : Front Camera
-    //      videoDevices[1] : Back Camera
-    //  I used an array to save the devices ID 
-    //  which i get using devices.forEach()
-    //  Then set the video resolution.
-    //----------------------------------------------------------------------
-    navigator.mediaDevices.enumerateDevices()
-    .then(devices => {
-      let videoDevices = [0,0];
-      let videoDeviceIndex = 0;
-      devices.forEach(function(device) {
-        // console.log(device.kind + ": " + device.label + " id = " + device.deviceId);
-        if (device.kind == "videoinput") {  
-          videoDevices[videoDeviceIndex++] =  device.deviceId;    
-        }
-      });
+  //----------------------------------------------------------------------
+  //  Here we list all media devices, in order to choose between
+  //  the front and the back camera.
+  //      videoDevices[0] : Front Camera
+  //      videoDevices[1] : Back Camera
+  //----------------------------------------------------------------------
+  navigator.mediaDevices.enumerateDevices()
+  .then(devices => {
+    let videoDevices = [0,0];
+    let videoDeviceIndex = 0;
+    devices.forEach(function(device) {
+      // console.log(device.kind + ": " + device.label + " id = " + device.deviceId);
+      if (device.kind == "videoinput") {  
+        videoDevices[videoDeviceIndex++] =  device.deviceId;    
+      }
+    });
 
-      let _videoDevice = videoDevices[1] ? videoDevices[1] : videoDevices[0];
-      let constraints =  {
-        width: { min: 320, ideal: 640, max: 1024 },
-        height: { min: 240, ideal: 480, max: 768 },
-        deviceId: { exact: _videoDevice  } 
-      };
-      
-      return navigator.mediaDevices.getUserMedia({ video: constraints });
-    })
-    .then(stream => {
-      if (video.mozSrcObject !== undefined) {
-        video.mozSrcObject = stream;
-      } else if (video.srcObject !== undefined) {
-        video.srcObject = stream;
-      } else {
-        video.src = stream;
-      }})
-    .catch(e => console.error(e));
+    let _videoDevice = videoDevices[1] ? videoDevices[1] : videoDevices[0];
+    let constraints =  {
+      width: { min: 320, ideal: 640, max: 1024 },
+      height: { min: 240, ideal: 480, max: 768 },
+      deviceId: { exact: _videoDevice  } 
+    };
+    
+    return navigator.mediaDevices.getUserMedia({ video: constraints });
+  })
+  .then(stream => {
+    if (video.mozSrcObject !== undefined) {
+      video.mozSrcObject = stream;
+    } else if (video.srcObject !== undefined) {
+      video.srcObject = stream;
+    } else {
+      video.src = stream;
+    }})
+  .catch(e => console.error(e));
 }
 
 let loopFrame;
@@ -80,7 +76,7 @@ const loop = () => {
 
   // Analizar frame
 
-  if( image.naturalWidth && image.naturalHeight ) {
+  if( (loopFrame % skipFrame !== 0) && image.naturalWidth && image.naturalHeight ) {
     try {
       source    = new ZXing.BitmapLuminanceSource(ctx, image);
       binarizer = new ZXing.Common.HybridBinarizer(source);
