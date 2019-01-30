@@ -13,6 +13,7 @@ let _canvasWidth = 0, _canvasHeight = 0;
 let skipFrame = 25;
 let loopFrame;
 let source, binarizer, bitmap, result;
+let ultimoDni = '';
 
 // Crear canvas para el video
 const canvas = document.createElement('canvas'),
@@ -26,11 +27,33 @@ let resultTemplate = resultP.innerHTML;
 const video = document.getElementById('dniVideo');
 const image = document.createElement('img');
 
+// Validaciones
+const validarTexto = _text => {
+  // El protocolo mantiene el texto en mayúsculas y sin caracteres especiales
+  let _regex = /^[A-Z ]+$/;
+  return _regex.test(_text.trim());
+}
+const validarFecha = _text => {
+  let _regex = /^[0-9]{2}\/[0-9]{2}\/[0-9]{4}?$/;
+  return _regex.test(_text.trim());
+}
+const validarNumero = _text => {
+  _text = _text.trim();
+  return !isNaN(_text) && _text.length >= 7 && _text.length <= 8;
+}
+
+// Parsear resultado
 const parseResult = _text => {
-  let result = resultTemplate, nombre = '', apellido = '', dni = '', sexo = '', fechaNac = '', raw = _text;
+  let result = resultTemplate,
+      nombre = '',
+      apellido = '',
+      dni = '',
+      sexo = '',
+      fechaNac = '',
+      raw = _text;
   let data = _text.split('@');
   console.log(data);
-  if( data.length == 8 ) {
+  if( data.length == 8 ||  data.length == 9 ) {
     // Formato nuevo
     apellido = data[1]
     nombre   = data[2]
@@ -46,18 +69,29 @@ const parseResult = _text => {
     dni      = data[1]
     fechaNac = data[7]
   } else {
-    // NO identificado
+    // Formato NO identificado
     return;
   }
 
-  result = result.replace('%raw%', raw);
-  result = result.replace('%nombre%', nombre);
-  result = result.replace('%apellido%', apellido);
-  result = result.replace('%sexo%', sexo);
-  result = result.replace('%dni%', dni);
-  result = result.replace('%fechaNac%', fechaNac);
+  if( ultimoDni === dni ) {
+    // El DNI escaneado es igual al último
+    return;
+  }
 
-  resultP.innerHTML = result;
+  if( validarFecha(fechaNac) &&
+      validarNumero(dni) && 
+      validarTexto(sexo) && 
+      validarTexto(apellido) && 
+      validarTexto(nombre) ) {
+    result = result.replace('%raw%', raw);
+    result = result.replace('%nombre%', nombre);
+    result = result.replace('%apellido%', apellido);
+    result = result.replace('%sexo%', sexo);
+    result = result.replace('%dni%', dni);
+    result = result.replace('%fechaNac%', fechaNac);
+
+    resultP.innerHTML = result;
+  }
 }
 
 const startWebcam = () => { 
