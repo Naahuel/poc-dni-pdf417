@@ -29,11 +29,43 @@ const video = document.createElement('video');
 const image = document.createElement('img')
 
 const startWebcam = () => { 
-  navigator.getUserMedia({ video: true, audio: false }, function(stream) {
-    video.srcObject = stream;
-  }, function(e) {
-    console.error('Error de cámara', e);
-  });
+    //----------------------------------------------------------------------
+    //  Here we list all media devices, in order to choose between
+    //  the front and the back camera.
+    //      videoDevices[0] : Front Camera
+    //      videoDevices[1] : Back Camera
+    //  I used an array to save the devices ID 
+    //  which i get using devices.forEach()
+    //  Then set the video resolution.
+    //----------------------------------------------------------------------
+    navigator.mediaDevices.enumerateDevices()
+    .then(devices => {
+      let videoDevices = [0,0];
+      let videoDeviceIndex = 0;
+      devices.forEach(function(device) {
+        // console.log(device.kind + ": " + device.label + " id = " + device.deviceId);
+        if (device.kind == "videoinput") {  
+          videoDevices[videoDeviceIndex++] =  device.deviceId;    
+        }
+      });
+
+      let _videoDevice = videoDevices[1] ? videoDevices[1] : videoDevices[0];
+      let constraints =  {width: { min: 1024, ideal: 1280, max: 1920 },
+      height: { min: 776, ideal: 720, max: 1080 },
+      deviceId: { exact: _videoDevice  } 
+    };
+    return navigator.mediaDevices.getUserMedia({ video: constraints });
+
+  })
+    .then(stream => {
+      if (video.mozSrcObject !== undefined) {
+        video.mozSrcObject = stream;
+      } else if (video.srcObject !== undefined) {
+        video.srcObject = stream;
+      } else {
+        video.src = stream;
+      }})
+    .catch(e => console.error(e));
 }
 
 let loopFrame;
