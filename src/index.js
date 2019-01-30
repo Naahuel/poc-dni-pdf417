@@ -50,13 +50,14 @@ const startWebcam = () => {
       });
 
       let _videoDevice = videoDevices[1] ? videoDevices[1] : videoDevices[0];
-      let constraints =  {width: { min: 1024, ideal: 1280, max: 1920 },
-      height: { min: 776, ideal: 720, max: 1080 },
-      deviceId: { exact: _videoDevice  } 
-    };
-    return navigator.mediaDevices.getUserMedia({ video: constraints });
-
-  })
+      let constraints =  {
+        width: { min: 320, ideal: 640, max: 1024 },
+        height: { min: 240, ideal: 480, max: 768 },
+        deviceId: { exact: _videoDevice  } 
+      };
+      
+      return navigator.mediaDevices.getUserMedia({ video: constraints });
+    })
     .then(stream => {
       if (video.mozSrcObject !== undefined) {
         video.mozSrcObject = stream;
