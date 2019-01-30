@@ -11,6 +11,7 @@ navigator.getUserMedia  = navigator.getUserMedia ||
 // Variables
 let _canvasWidth = 0, _canvasHeight = 0;
 let skipFrame = 25;
+let loopFrame;
 let source, binarizer, bitmap, result;
 
 // Crear canvas para el video
@@ -18,11 +19,46 @@ const canvas = document.createElement('canvas'),
       ctx = canvas.getContext('2d');
 
 // Párrafo de resultado
-let resultP = document.getElementById('result');
+let resultP        = document.getElementById('result');
+let resultTemplate = resultP.innerHTML;
 
 // Crear elemento video e imagen
 const video = document.getElementById('dniVideo');
-const image = document.createElement('img')
+const image = document.createElement('img');
+
+const parseResult = _text => {
+  let result = resultTemplate, nombre = '', apellido = '', dni = '', sexo = '', fechaNac = '', raw = _text;
+  let data = _text.split('@');
+  console.log(data);
+  if( data.length == 8 ) {
+    // Formato nuevo
+    apellido = data[1]
+    nombre   = data[2]
+    sexo     = data[3]
+    dni      = data[4]
+    fechaNac = data[6]
+
+  } else if (data.length == 15) {
+    // Formato anterior
+    apellido = data[4]
+    nombre   = data[5]
+    sexo     = data[8]
+    dni      = data[1]
+    fechaNac = data[7]
+  } else {
+    // NO identificado
+    return;
+  }
+
+  result = result.replace('%raw%', raw);
+  result = result.replace('%nombre%', nombre);
+  result = result.replace('%apellido%', apellido);
+  result = result.replace('%sexo%', sexo);
+  result = result.replace('%dni%', dni);
+  result = result.replace('%fechaNac%', fechaNac);
+
+  resultP.innerHTML = result;
+}
 
 const startWebcam = () => { 
   //----------------------------------------------------------------------
@@ -62,11 +98,9 @@ const startWebcam = () => {
   .catch(e => console.error(e));
 }
 
-let loopFrame;
-
-const loop = () => {
+const mainLoop = () => {
   // Loop principal
-  loopFrame = requestAnimationFrame(loop);
+  loopFrame = requestAnimationFrame(mainLoop);
   ctx.globalAlpha = 1;
   image.src = canvas.toDataURL();
   ctx.drawImage(video, 0, 0, _canvasWidth, _canvasHeight);
@@ -80,7 +114,7 @@ const loop = () => {
       bitmap    = new ZXing.BinaryBitmap(binarizer);
       result    = ZXing.PDF417.PDF417Reader.decode(bitmap, null, false)
       if( result && result[0] ) {
-        resultP.innerHTML = result[0].Text.split('@').join('<br />');
+        parseResult(result[0].Text);
       }
      
     } catch (err) {
@@ -90,16 +124,15 @@ const loop = () => {
 }
 
 const startLoop = () => { 
-  loopFrame = loopFrame || requestAnimationFrame(loop);
+  loopFrame = loopFrame || requestAnimationFrame(mainLoop);
 }
 
-// Iniciar loop
+// Iniciar loop al cargar video
 video.addEventListener('loadedmetadata',function(){
   _canvasWidth  = canvas.width = video.videoWidth;
   _canvasHeight = canvas.height = video.videoHeight;
   startLoop();
 });
-
 
 // Inicializar
 startWebcam();
