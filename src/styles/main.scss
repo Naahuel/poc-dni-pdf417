@@ -1,11 +1,43 @@
+body, html {
+  padding: 0;
+  margin: 0;
+}
+
 body {
   background: #EEE;
   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
   text-align: center;
 }
 
-video {
-  width: 100%;
-  height: auto;
-  max-width: 500px;
+.content-wrap {
+  max-width: 480px;
+  padding-left: 15px;
+  padding-right: 15px;
+  margin: 0 auto;
+}
+
+.video-wrap {
+  height: 300px;
+  overflow: hidden;
+  position: relative;
+  video {
+    width: 100%;
+    height: auto;
+    position: absolute;
+    z-index: 1;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%)
+  }
+
+  &:after {
+    content: '';
+    display: block;
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    border-bottom: 2px solid red;
+    z-index: 2;
+  }
 }

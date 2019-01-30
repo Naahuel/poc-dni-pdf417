@@ -18,13 +18,10 @@ const canvas = document.createElement('canvas'),
       ctx = canvas.getContext('2d');
 
 // Párrafo de resultado
-let resultP = document.createElement('p');
-document.body.appendChild(resultP)
+let resultP = document.getElementById('result');
 
 // Crear elemento video e imagen
-const video = document.createElement('video');
-      video.setAttribute('autoplay',true);
-      document.body.appendChild(video);
+const video = document.getElementById('dniVideo');
 const image = document.createElement('img')
 
 const startWebcam = () => { 
