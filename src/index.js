@@ -12,6 +12,7 @@ navigator.getUserMedia  = navigator.getUserMedia ||
 let _canvasWidth = 0, _canvasHeight = 0;
 let skipFrame = 45;
 let loopFrame;
+let loopSkipedFrame = 0;
 let source, binarizer, bitmap, result;
 let ultimoDni = '';
 
@@ -162,15 +163,27 @@ const startWebcam = () => {
 
 const mainLoop = () => {
   // Loop principal
+  loopSkipedFrame++;
   loopFrame = requestAnimationFrame(mainLoop);
-  ctx.globalAlpha = 1;
-  ctx.filter = "grayscale(100%) brightness(150%) contrast(150%)";
   image.src = canvas.toDataURL();
-  ctx.drawImage(video, 0, 0, _canvasWidth, _canvasHeight);
 
   // Analizar frame
 
   if( (loopFrame % skipFrame !== 0) && image.naturalWidth && image.naturalHeight ) {
+    // Clear the canvas
+    ctx.clearRect(0, 0, _canvasWidth, _canvasHeight);
+    ctx.globalAlpha = 1;
+    ctx.filter = "grayscale(100%) brightness(150%) contrast(150%)";
+    
+    // Move registration point to the center of the canvas
+    ctx.translate(_canvasWidth/2, _canvasHeight/2);
+    
+    // Rotate 1 degree
+    ctx.rotate((loopSkipedFrame % 2 == 0 ? -2 : 2) * Math.PI / 180)
+      
+    // Move registration point back to the top left corner of canvas
+    ctx.translate(-_canvasWidth/2, -_canvasHeight/2);
+    ctx.drawImage(video, 0, 0, _canvasWidth, _canvasHeight);
     try {
       source    = new ZXing.BitmapLuminanceSource(ctx, image);
       binarizer = new ZXing.Common.HybridBinarizer(source);
