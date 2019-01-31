@@ -164,6 +164,7 @@ const mainLoop = () => {
   // Loop principal
   loopFrame = requestAnimationFrame(mainLoop);
   ctx.globalAlpha = 1;
+  ctx.filter = "grayscale(100%) brightness(150%) contrast(150%)";
   image.src = canvas.toDataURL();
   ctx.drawImage(video, 0, 0, _canvasWidth, _canvasHeight);
 
