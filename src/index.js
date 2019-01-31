@@ -93,6 +93,9 @@ const parseResult = _text => {
 
     resultP.innerHTML = result;
     resultP.classList.add('success');
+    if( navigator.vibrate ) {
+      navigator.vibrate(150);
+    }
     setTimeout(_ => {
       resultP.classList.remove("success");
     }, 1000);
