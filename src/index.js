@@ -28,6 +28,9 @@ let resultTemplate = resultP.innerHTML;
 const video = document.getElementById('dniVideo');
 const image = document.createElement('img');
 
+// Boton de inicio
+const iniciar = document.getElementById('iniciar');
+
 // Validaciones
 const validarTexto = _text => {
   // El protocolo mantiene el texto en mayúsculas y sin caracteres especiales
@@ -211,4 +214,7 @@ video.addEventListener('loadedmetadata',function(){
 });
 
 // Inicializar
-startWebcam();
+iniciar.addEventListener('click', function(){
+  startWebcam();
+  iniciar.remove();
+});
