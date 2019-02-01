@@ -74,6 +74,10 @@ const parseResult = _text => {
     fechaNac = data[7].trim()
   } else {
     // Formato NO identificado
+    resultP.classList.add('error');
+    setTimeout(_ => {
+      resultP.classList.remove("error");
+    }, 1000);
     return;
   }
 
