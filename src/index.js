@@ -176,7 +176,7 @@ const mainLoop = () => {
     // Clear the canvas
     ctx.clearRect(0, 0, _canvasWidth, _canvasHeight);
     ctx.globalAlpha = 1;
-    ctx.filter = "grayscale(100%) brightness(150%) contrast(150%)";
+    ctx.filter = "grayscale(100%) brightness(200%) contrast(200%)";
     
     // Move registration point to the center of the canvas
     ctx.translate(_canvasWidth/2, _canvasHeight/2);
