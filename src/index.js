@@ -10,7 +10,7 @@ navigator.getUserMedia  = navigator.getUserMedia ||
 
 // Variables
 let _canvasWidth = 0, _canvasHeight = 0;
-let skipFrame = 45;
+let skipFrame = 25;
 let loopFrame;
 let loopSkipedFrame = 0;
 let source, binarizer, bitmap, result;
@@ -176,13 +176,13 @@ const mainLoop = () => {
     // Clear the canvas
     ctx.clearRect(0, 0, _canvasWidth, _canvasHeight);
     ctx.globalAlpha = 1;
-    ctx.filter = "grayscale(100%) brightness(200%) contrast(200%)";
+    ctx.filter = "grayscale(100%) brightness(250%) contrast(250%)";
     
     // Move registration point to the center of the canvas
     ctx.translate(_canvasWidth/2, _canvasHeight/2);
     
     // Rotate 1 degree
-    ctx.rotate((loopSkipedFrame % 2 == 0 ? -2 : 2) * Math.PI / 180)
+    ctx.rotate((loopSkipedFrame % 2 == 0 ? -3 : 3) * Math.PI / 180)
       
     // Move registration point back to the top left corner of canvas
     ctx.translate(-_canvasWidth/2, -_canvasHeight/2);
