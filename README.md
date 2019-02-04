@@ -3,6 +3,8 @@ Este demo intenta leer el código de barras 2D en formato PDF417 del DNI argenti
 
 Está basado en un [port de JS](https://github.com/PeculiarVentures/js-zxing-pdf417) de [ZXing](http://github.com/zxing/zxing)
 
+[También puede ver la versión con WebAssembly.](https://github.com/Naahuel/poc-dni-pdf417-WA)
+
 ## Desarrollo
 ```
 npm install
